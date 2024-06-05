@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
@@ -8,30 +8,24 @@ import Header from './components/Header';
 import LoginForm from './components/Auth/LoginForm';
 import RegisterForm from './components/Auth/RegisterForm';
 
-
 const App = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
-
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-    },
-  });
+  const [darkMode, setDarkMode] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={createTheme({ palette: { mode: darkMode ? 'dark' : 'light' } })}>
       <CssBaseline />
       <Router>
-        <Header />
+        <Header isLoggedIn={isLoggedIn} />
         <Routes>
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/" element={<LoginForm setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<RegisterForm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard isLoggedIn={isLoggedIn} />} />
         </Routes>
         <Footer toggleDarkMode={toggleDarkMode} />
       </Router>
