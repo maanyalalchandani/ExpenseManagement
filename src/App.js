@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import Dashboard from './components/Dashboard/Dashboard';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import Dashboard from './components/Dashboard/Dashboard';
-// import RegisterForm from './components/Auth/RegisterForm';
-// import LoginForm from './components/Auth/LoginForm';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { useMediaQuery } from '@mui/material';
-import themeSettings from './components/utils/theme';
+import LoginForm from './components/Auth/LoginForm';
+import RegisterForm from './components/Auth/RegisterForm';
+
 
 const App = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [darkMode, setDarkMode] = useState(prefersDarkMode);
+  const [darkMode, setDarkMode] = React.useState(false);
 
-  const theme = React.useMemo(() => createTheme(themeSettings(darkMode)), [darkMode]);
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  });
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -24,16 +26,14 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div className="App">
-          <Header />
-          <Routes>
-            {/* <Route path="/register" element={<RegisterForm />} />
-            <Route path="/login" element={<LoginForm />} /> */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Dashboard />} />
-          </Routes>
-          <Footer darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </div>
+        <Header />
+        <Routes>
+          <Route path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+        <Footer toggleDarkMode={toggleDarkMode} />
       </Router>
     </ThemeProvider>
   );
