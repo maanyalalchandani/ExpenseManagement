@@ -1,62 +1,17 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f0f2f5',
-  },
-  layoutContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '70%',
-    backgroundColor: '#ffffff',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    overflow: 'hidden',
-  },
-  infoSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '50%',
-    padding: '2rem',
-    backgroundColor: '#2196f3',
-    color: '#ffffff',
-  },
-  formSection: {
-    width: '50%',
-    padding: '2rem',
-  },
-  title: {
-    marginBottom: '1rem',
-  },
-  subtitle: {
-    fontSize: '1.1rem',
-  },
-});
 
 const AuthLayout = ({ title, subtitle, children }) => {
-  const classes = useStyles();
   return (
-    <Box className={classes.root}>
-      <Box className={classes.layoutContainer}>
-        <Box className={classes.infoSection}>
-          <Typography variant="h4" component="h1" className={classes.title}>
-            {title}
-          </Typography>
-          <Typography variant="h6" component="h2" className={classes.subtitle}>
-            {subtitle}
-          </Typography>
-        </Box>
-        <Box className={classes.formSection}>{children}</Box>
-      </Box>
-    </Box>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="flex flex-col lg:flex-row w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="flex flex-col justify-center items-center w-full lg:w-1/2 bg-blue-500 text-white p-8">
+          <h1 className="text-3xl font-bold mb-4">{title}</h1>
+          <p className="text-lg">{subtitle}</p>
+          <img src="publ\images\bg_login.jpeg" alt="Decoration" className="mt-4 w-full h-56 object-cover lg:hidden" />
+        </div>
+        <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">{children}</div>
+      </div>
+    </div>
   );
 };
 
