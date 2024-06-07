@@ -4,14 +4,14 @@ import { Box, Button, TextField, Typography, CircularProgress, InputAdornment } 
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
+//import PhoneIcon from '@mui/icons-material/Phone';
 import AuthLayout from './AuthLayout';
 import { validateName, validateEmail, validatePhoneNumber, validatePassword, passwordsMatch } from './validations';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    username: '',
+    //username: '',
     email: '',
     phone: '',
     password: '',
@@ -30,7 +30,7 @@ const RegisterForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { name, username, email, phone, password, confirmPassword } = formData;
+    const { name, /*username*/ email, phone, password, confirmPassword } = formData;
 
     // Perform form validation
     const newErrors = {};
@@ -117,7 +117,7 @@ const RegisterForm = () => {
             ),
           }}
         />
-        <TextField
+        {/* <TextField
           label="Phone Number"
           name="phone"
           fullWidth
@@ -133,7 +133,7 @@ const RegisterForm = () => {
               </InputAdornment>
             ),
           }}
-        />
+        /> */}
         <TextField
           label="Password"
           name="password"
