@@ -3,6 +3,8 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
+import Header from '../Header';
+import Sidebar from '../Sidebar';
 
 const drawerWidth = 240;
 
@@ -26,13 +28,27 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const Dashboard = () => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Main open>
-        <Typography paragraph>
-          Dashboard
-        </Typography>
+      <Header open={open} handleDrawerOpen={handleDrawerOpen} />
+      <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
+      <Main open={open}>
+        <div style={{ marginTop: '64px' }}> {/* Adjusting for the height of AppBar */}
+          <Typography paragraph>
+            Dashboard
+          </Typography>
+        </div>
       </Main>
     </Box>
   );
