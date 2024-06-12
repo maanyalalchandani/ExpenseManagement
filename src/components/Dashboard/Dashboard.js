@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
+import MonthlyBudget from '../MonthlyBudget/MonthlyBudget';
 
 const drawerWidth = 240;
 
@@ -42,7 +43,7 @@ const Dashboard = () => {
   const renderContent = () => {
     switch (activeItem) {
       case 'Monthly Budget':
-        return <Typography paragraph>Monthly Budget Content</Typography>;
+        return <MonthlyBudget />;
       case 'Expense':
         return <Typography paragraph>Expense Content</Typography>;
       case 'Calendar':

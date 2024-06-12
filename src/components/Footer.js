@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 const Footer = ({ darkMode, toggleDarkMode }) => (
   <footer style={{ position: 'fixed', bottom: 0, width: '100%', background: '#3f51b5', color: '#fff', padding: '10px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
