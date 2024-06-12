@@ -1,5 +1,6 @@
 import React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -16,6 +17,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CalculatorIcon from '@mui/icons-material/Calculate';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useTheme } from '@mui/material/styles';
 
 const drawerWidth = 240;
 
@@ -23,11 +25,19 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
 
-const Sidebar = ({ open, handleDrawerClose }) => {
+const Sidebar = ({ open, handleDrawerClose, setActiveItem }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Perform any necessary logout logic here
+    navigate('/login');
+  };
 
   const sidebarItems = [
     { text: 'Monthly Budget', icon: <BudgetIcon /> },
@@ -35,7 +45,7 @@ const Sidebar = ({ open, handleDrawerClose }) => {
     { text: 'Calendar', icon: <CalendarTodayIcon /> },
     { text: 'Calculator', icon: <CalculatorIcon /> },
     { text: 'Edit Profile', icon: <EditIcon /> },
-    { text: 'Logout', icon: <LogoutIcon /> },
+    { text: 'Logout', icon: <LogoutIcon />, action: handleLogout },
   ];
 
   return (
@@ -61,7 +71,7 @@ const Sidebar = ({ open, handleDrawerClose }) => {
       <List>
         {sidebarItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={item.action || (() => setActiveItem(item.text))}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
