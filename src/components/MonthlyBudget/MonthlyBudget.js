@@ -23,7 +23,7 @@ const MonthlyBudget = () => {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
+      <Typography className="!font-bold" variant="h5" gutterBottom>
         Monthly Budget
       </Typography>
       {!incomeData && (
@@ -38,14 +38,14 @@ const MonthlyBudget = () => {
           <Typography variant="h6">Budget: {incomeData.budget}</Typography>
           <Typography variant="h6">Left Income: {incomeData.leftIncome}</Typography>
           <Button variant="contained" color="primary" onClick={() => setShowBudgetForm(true)}>
-            Add Budget for Month
+            Add Expenses for Month
           </Button>
         </Box>
       )}
       {showBudgetForm && <AddBudgetForm onSubmit={handleBudgetSubmit} />}
       {budgetData.length > 0 && (
         <Box mt={2}>
-          <Typography variant="h6">Budget Details:</Typography>
+          <Typography variant="h6" className="!font-bold">Budget Details:</Typography>
           {budgetData.map((budget, index) => (
             <Typography key={index}>{`${budget.type}: ${budget.amount}`}</Typography>
           ))}

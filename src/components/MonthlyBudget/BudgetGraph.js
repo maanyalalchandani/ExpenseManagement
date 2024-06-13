@@ -1,6 +1,9 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const BudgetGraph = ({ open, onClose, data }) => {
   const graphData = {

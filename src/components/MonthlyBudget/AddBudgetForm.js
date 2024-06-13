@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Box, Typography, IconButton } from '@mui/material';
+import { Button, TextField, Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const AddBudgetForm = ({ onSubmit }) => {
@@ -31,7 +31,6 @@ const AddBudgetForm = ({ onSubmit }) => {
 
   return (
     <Box>
-      <Typography variant="h6">Add Monthly Budget</Typography>
       <form onSubmit={handleSubmit}>
         {budgets.map((budget, index) => (
           <Box key={index} display="flex" alignItems="center">
@@ -56,7 +55,7 @@ const AddBudgetForm = ({ onSubmit }) => {
           </Box>
         ))}
         <Button onClick={handleAddBudget} variant="contained" color="primary">
-          Add More Budget
+          New Row
         </Button>
         <Box mt={2}>
           <TextField

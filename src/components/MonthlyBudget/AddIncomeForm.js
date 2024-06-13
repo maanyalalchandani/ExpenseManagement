@@ -13,7 +13,6 @@ const AddIncomeForm = ({ onSubmit }) => {
 
   return (
     <Box>
-      <Typography variant="h6">Add Income</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
           label="Total Income"

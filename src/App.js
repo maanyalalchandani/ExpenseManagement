@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import LoginForm from './components/Auth/LoginForm';
 import RegisterForm from './components/Auth/RegisterForm';
+import "./styles/global.css"
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
