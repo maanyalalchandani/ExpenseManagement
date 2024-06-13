@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { styled } from '@mui/material/styles';
+import "../styles/global.css"
 
 const drawerWidth = 240;
 
@@ -35,7 +36,7 @@ const Header = ({ open, handleDrawerOpen }) => (
       >
         <MenuIcon />
       </IconButton>
-      <Typography variant="h6" noWrap>
+      <Typography variant="h6" noWrap className="uppercase !font-extrabold !font-serif">
         Expense Management
       </Typography>
     </Toolbar>
