@@ -31,4 +31,3 @@ const BudgetGraph = ({ open, onClose, data }) => {
 };
 
 export default BudgetGraph;
-
