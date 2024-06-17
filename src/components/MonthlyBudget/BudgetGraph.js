@@ -6,7 +6,7 @@ import chroma from 'chroma-js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const BudgetGraph = ({ open, onClose, data }) => {
+const BudgetGraph = ({ open, onClose, data = [] }) => {
   // Generate a unique color for each data point using chroma.js
   const colorScale = chroma.scale('Spectral').colors(data.length);
 
@@ -21,7 +21,7 @@ const BudgetGraph = ({ open, onClose, data }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Expense Distribution</DialogTitle>
       <DialogContent>
         <Pie data={graphData} />

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Button, TextField, Box, Typography } from '@mui/material';
+import { Button, TextField, Box, Typography, Card, CardContent } from '@mui/material';
 
-const AddIncomeForm = ({ onSubmit }) => {
-  const [income, setIncome] = useState('');
-  const [budget, setBudget] = useState('');
+const AddIncomeForm = ({ onSubmit, initialIncome, initialBudget }) => {
+  const [income, setIncome] = useState(initialIncome);
+  const [budget, setBudget] = useState(initialBudget);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -12,37 +12,40 @@ const AddIncomeForm = ({ onSubmit }) => {
   };
 
   return (
-    <Box>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Total Income"
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-          fullWidth
-          margin="normal"
-          type="number"
-        />
-        <TextField
-          label="Budget"
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)}
-          fullWidth
-          margin="normal"
-          type="number"
-        />
-        <TextField
-          label="Left Income"
-          value={income - budget}
-          fullWidth
-          margin="normal"
-          type="number"
-          disabled
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
-      </form>
-    </Box>
+    <Card sx={{ mt: 2 }}>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>Add Income</Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Total Income"
+            value={income}
+            onChange={(e) => setIncome(Number(e.target.value))}
+            fullWidth
+            margin="normal"
+            type="number"
+          />
+          <TextField
+            label="Budget"
+            value={budget}
+            onChange={(e) => setBudget(Number(e.target.value))}
+            fullWidth
+            margin="normal"
+            type="number"
+          />
+          <TextField
+            label="Left Income"
+            value={income - budget}
+            fullWidth
+            margin="normal"
+            type="number"
+            disabled
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+            Submit
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
