@@ -6,6 +6,9 @@ import Typography from '@mui/material/Typography';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import MonthlyBudget from '../MonthlyBudget/MonthlyBudget';
+import Calendar from './Calendar';
+import MonthlyExpense from './MonthlyExpense';
+import Calculator from './Calculator';
 
 const drawerWidth = 240;
 
@@ -45,11 +48,11 @@ const Dashboard = () => {
       case 'Monthly Budget':
         return <MonthlyBudget />;
       case 'Expense':
-        return <Typography paragraph>Expense Content</Typography>;
+        return <MonthlyExpense />;
       case 'Calendar':
-        return <Typography paragraph>Calendar Content</Typography>;
+        return <Calendar />;
       case 'Calculator':
-        return <Typography paragraph>Calculator Content</Typography>;
+        return <Calculator />;
       case 'Edit Profile':
         return <Typography paragraph>Edit Profile Content</Typography>;
       // case 'Logout':
