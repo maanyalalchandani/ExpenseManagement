@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, CircularProgress, InputAdornment } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import AuthLayout from './AuthLayout';
+import { login } from '../store/authSlice';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -11,25 +13,35 @@ const LoginForm = () => {
     password: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { username, password } = formData;
+
     setLoading(true);
-    // Simulate API call for authentication
     setTimeout(() => {
       setLoading(false);
-      // Navigate to dashboard if authentication is successful
-      navigate('/dashboard');
+      dispatch(login({ username, password }));
+      if (isAuthenticated) {
+        navigate('/dashboard');
+      } else {
+        setErrors({ login: 'Invalid username or password' });
+      }
     }, 2000);
   };
 
   return (
-    <AuthLayout title="Welcome!" subtitle="Please sign in to continue.">
+    <AuthLayout title="Sign In" subtitle="Please enter your login details.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <TextField
           label="Username"
@@ -71,11 +83,16 @@ const LoginForm = () => {
             disabled={loading}
             className="mt-4"
           >
-            {loading ? <CircularProgress size={24} /> : 'Sign In'}
+            {loading ? <CircularProgress size={24} /> : 'Login'}
           </Button>
         </Box>
+        {errors.login && (
+          <Typography color="error" className="text-center mt-4">
+            {errors.login}
+          </Typography>
+        )}
         <Typography variant="body2" className="text-center mt-4">
-          Don't have an account? <Link to="/register" className="text-decoration-line: underline">Sign up</Link>
+          Don't have an account? <Link to="/register" className="text-decoration-line: underline">Register</Link>
         </Typography>
       </form>
     </AuthLayout>

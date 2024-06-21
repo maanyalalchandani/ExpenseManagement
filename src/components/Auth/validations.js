@@ -8,10 +8,10 @@ export const validateName = (name) => {
     return regex.test(email);
   };
   
-  export const validatePhoneNumber = (phoneNumber) => {
-    const regex = /^[0-9]{10}$/;
-    return regex.test(phoneNumber);
-  };
+  // export const validatePhoneNumber = (phoneNumber) => {
+  //   const regex = /^[0-9]{10}$/;
+  //   return regex.test(phoneNumber);
+  // };
   
   export const validatePassword = (password) => {
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
