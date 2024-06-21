@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-  MenuItem,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent
-} from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, Grid, TextField, MenuItem, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { addExpense, deleteExpense } from '../store/monthlyExpenseSlice';
@@ -29,9 +16,10 @@ const expenseCategories = ['Food', 'Transport', 'Shopping', 'Education'];
 
 const MonthlyExpense = () => {
   const dispatch = useDispatch();
-  const incomeData = useSelector((state) => state.budget.incomeData);
-  const budgetData = useSelector((state) => state.budget.budgetData);
-  const expenses = useSelector((state) => state.monthlyExpense.expenses);
+  const incomeData = useSelector(state => state.budget.incomeData);
+  const budgetData = useSelector(state => state.budget.budgetData);
+  const expenses = useSelector(state => state.monthlyExpense.expenses);
+  const userEmail = useSelector(state => state.auth.user?.email);
 
   const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState('');
@@ -48,7 +36,7 @@ const MonthlyExpense = () => {
       amount: parseFloat(amount),
     };
     dispatch(addExpense(expense));
-    sendExpenseEmail(expense); // Send an email with expense details
+    sendExpenseEmail(expense, userEmail);  // Send an email with expense details
     setCategory('');
     setCustomCategory('');
     setAmount('');
