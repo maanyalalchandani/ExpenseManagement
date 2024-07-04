@@ -9,6 +9,7 @@ import MonthlyBudget from '../MonthlyBudget/MonthlyBudget';
 import Calendar from './Calendar';
 import MonthlyExpense from './MonthlyExpense';
 import Calculator from './Calculator';
+import DefaultDash from './DefaultDash';
 
 const drawerWidth = 240;
 
@@ -45,9 +46,11 @@ const Dashboard = () => {
 
   const renderContent = () => {
     switch (activeItem) {
+      case 'Home':
+        return <DefaultDash />;
       case 'Monthly Budget':
         return <MonthlyBudget />;
-      case 'Expense':
+      case 'Daily Expenses':
         return <MonthlyExpense />;
       case 'Calendar':
         return <Calendar />;
@@ -58,7 +61,7 @@ const Dashboard = () => {
       // case 'Logout':
       //   return <Typography paragraph>Logout Content</Typography>;
       default:
-        return <Typography paragraph>Dashboard Content</Typography>;
+        return <DefaultDash />;
     }
   };
 

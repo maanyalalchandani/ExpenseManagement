@@ -36,7 +36,7 @@ const MonthlyExpense = () => {
       amount: parseFloat(amount),
     };
     dispatch(addExpense(expense));
-    sendExpenseEmail(expense, userEmail);  // Send an email with expense details
+    sendExpenseEmail(expense, userEmail);
     setCategory('');
     setCustomCategory('');
     setAmount('');
@@ -53,19 +53,19 @@ const MonthlyExpense = () => {
   const leftIncome = incomeData?.income - calculateTotalExpenses();
 
   return (
-    <Box p={3} display="flex" flexDirection="column" alignItems="center">
+    <Box p={2} display="flex" flexDirection="column" alignItems="center">
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
-          <Typography variant="h4" gutterBottom>Monthly Expense</Typography>
-          <Typography variant="h6">Total Income: {incomeData?.income}</Typography>
-          <Typography variant="h6">Budget: {incomeData?.budget}</Typography>
-          <Typography variant="h6">Left Income: {leftIncome}</Typography>
+          <Typography variant="h6" gutterBottom>Daily Expense</Typography>
+          <Typography variant="subtitle1">Total Income: {incomeData?.income}</Typography>
+          <Typography variant="subtitle1">Budget: {incomeData?.budget}</Typography>
+          <Typography variant="subtitle1">Left Income: {leftIncome}</Typography>
         </CardContent>
       </Card>
 
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>Add Expense</Typography>
+          <Typography variant="subtitle1" gutterBottom>Add Expense</Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -122,11 +122,11 @@ const MonthlyExpense = () => {
 
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>Expenses</Typography>
+          <Typography variant="subtitle1" gutterBottom>Expenses</Typography>
           {expenses.map((expense) => (
-            <Box key={expense.id} display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Box key={expense.id} display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               <Typography>{`${expense.date} - ${expense.category}: ${expense.amount}`}</Typography>
-              <IconButton onClick={() => handleDeleteExpense(expense.id)} color="secondary">
+              <IconButton onClick={() => handleDeleteExpense(expense.id)}>
                 <DeleteIcon />
               </IconButton>
             </Box>
@@ -134,8 +134,14 @@ const MonthlyExpense = () => {
         </CardContent>
       </Card>
 
-      <Button variant="contained" onClick={() => setShowGraph(true)} sx={{ mb: 2 }}>Show Graph</Button>
-      <Button variant="contained" onClick={() => setShowCalculator(true)}>Open Calculator</Button>
+      <Box display="flex" justifyContent="space-between" width="100%">
+        <Button variant="contained" onClick={() => setShowGraph(true)} sx={{ mt: 2 }}>
+          Show Graph
+        </Button>
+        <Button variant="contained" onClick={() => setShowCalculator(true)} sx={{ mt: 2 }}>
+          Calculator
+        </Button>
+      </Box>
 
       <BudgetGraph open={showGraph} onClose={() => setShowGraph(false)} data={expenses} />
       <Dialog open={showCalculator} onClose={() => setShowCalculator(false)} maxWidth="sm" fullWidth>
@@ -150,7 +156,7 @@ const MonthlyExpense = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Calculator />
+          <Calculator onClose={() => setShowCalculator(false)} />
         </DialogContent>
       </Dialog>
     </Box>
