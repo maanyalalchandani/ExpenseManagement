@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, Card, CardContent, Grid } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent } from '@mui/material';
 import AddIncomeForm from './AddIncomeForm';
 import AddBudgetForm from './AddBudgetForm';
 import BudgetGraph from './BudgetGraph';
@@ -30,10 +30,10 @@ const MonthlyBudget = () => {
   };
 
   return (
-    <Box p={3} display="flex" justifyContent="center">
+    <Box p={2} display="flex" justifyContent="center">
       <Card sx={{ maxWidth: 600, width: '100%' }}>
         <CardContent>
-          <Typography variant="h4" gutterBottom className="!font-bold">Monthly Budget</Typography>
+          <Typography variant="h6" gutterBottom>Monthly Budget</Typography>
           {!incomeData || editingIncome ? (
             <AddIncomeForm
               onSubmit={handleIncomeSubmit}
@@ -42,9 +42,9 @@ const MonthlyBudget = () => {
             />
           ) : (
             <Box>
-              <Typography variant="h6">Income: {incomeData.income}</Typography>
-              <Typography variant="h6">Budget: {incomeData.budget}</Typography>
-              <Typography variant="h6">Left Income: {incomeData.leftIncome}</Typography>
+              <Typography variant="subtitle1">Income: {incomeData.income}</Typography>
+              <Typography variant="subtitle1">Budget: {incomeData.budget}</Typography>
+              <Typography variant="subtitle1">Left Income: {incomeData.leftIncome}</Typography>
               <Button variant="contained" onClick={() => setEditingIncome(true)} sx={{ mt: 2 }}>
                 Edit Income
               </Button>
@@ -52,7 +52,7 @@ const MonthlyBudget = () => {
                 <AddBudgetForm onSubmit={handleBudgetSubmit} totalBudget={incomeData.budget} />
               ) : (
                 <Box mt={3}>
-                  <Typography variant="h6" gutterBottom className="!font-semibold">Budget Details</Typography>
+                  <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
                   {budgetData.map((budget, index) => (
                     <Typography key={index} sx={{ mb: 1 }}>{`${budget.type}: ${budget.amount}`}</Typography>
                   ))}

@@ -1,47 +1,43 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, CircularProgress, InputAdornment } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import EmailIcon from '@mui/icons-material/Email';
-//import PhoneIcon from '@mui/icons-material/Phone';
 import AuthLayout from './AuthLayout';
-import { validateName, validateEmail, validatePhoneNumber, validatePassword, passwordsMatch } from './validations';
+import { validateName, validateEmail, validatePassword, passwordsMatch } from './validations';
+import { register } from '../store/authSlice';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    //username: '',
+    username: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear previous error message when user starts typing
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { name, /*username*/ email, phone, password, confirmPassword } = formData;
+    const { name, username, email, password, confirmPassword } = formData;
 
-    // Perform form validation
     const newErrors = {};
     if (!validateName(name)) {
       newErrors.name = 'Please enter a valid name';
     }
     if (!validateEmail(email)) {
       newErrors.email = 'Please enter a valid email';
-    }
-    if (!validatePhoneNumber(phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
     }
     if (!validatePassword(password)) {
       newErrors.password = 'Password must be at least 8 characters long, containing at least one letter, one number, and one special character';
@@ -51,16 +47,14 @@ const RegisterForm = () => {
     }
 
     if (Object.keys(newErrors).length > 0) {
-      // If there are errors, set them in the state and prevent form submission
       setErrors(newErrors);
       return;
     }
 
     setLoading(true);
-    // Simulate API call for registration
     setTimeout(() => {
       setLoading(false);
-      // Navigate to login page after registration
+      dispatch(register({ name, username, email, password }));
       navigate('/login');
     }, 2000);
   };
@@ -117,23 +111,6 @@ const RegisterForm = () => {
             ),
           }}
         />
-        {/* <TextField
-          label="Phone Number"
-          name="phone"
-          fullWidth
-          margin="normal"
-          value={formData.phone}
-          onChange={handleChange}
-          error={!!errors.phone}
-          helperText={errors.phone}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PhoneIcon />
-              </InputAdornment>
-            ),
-          }}
-        /> */}
         <TextField
           label="Password"
           name="password"
