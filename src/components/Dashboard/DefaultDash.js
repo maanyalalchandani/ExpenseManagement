@@ -15,7 +15,6 @@ const DefaultDash = () => {
 
   return (
     <Box p={2} display="flex" flexDirection="column" alignItems="center">
-      <Typography variant="h5" gutterBottom>Dashboard</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Card>
