@@ -6,27 +6,28 @@ const budgetSlice = createSlice({
     income: 0,
     budget: 0,
     expenses: [],
+    budgetDetails: [],
   },
   reducers: {
     setIncome: (state, action) => {
       state.income = action.payload;
+      localStorage.setItem('income', action.payload);
     },
     setBudget: (state, action) => {
       state.budget = action.payload;
+      localStorage.setItem('budget', action.payload);
     },
     addExpense: (state, action) => {
       state.expenses.push(action.payload);
+      localStorage.setItem('expenses', JSON.stringify(state.expenses));
     },
-    updateExpense: (state, action) => {
-      const { index, expense } = action.payload;
-      state.expenses[index] = expense;
-    },
-    removeExpense: (state, action) => {
-      state.expenses.splice(action.payload, 1);
+    setBudgetDetails: (state, action) => {
+      state.budgetDetails = action.payload;
+      localStorage.setItem('budgetDetails', JSON.stringify(action.payload));
     },
   },
 });
 
-export const { setIncome, setBudget, addExpense, updateExpense, removeExpense } = budgetSlice.actions;
+export const { setIncome, setBudget, addExpense, setBudgetDetails } = budgetSlice.actions;
 
 export default budgetSlice.reducer;
