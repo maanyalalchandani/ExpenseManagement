@@ -7,7 +7,9 @@ import dayjs from 'dayjs';
 
 const Calendar = () => {
   const expenses = useSelector(state => state.monthlyExpense.expenses);
-  const incomeData = useSelector(state => state.budget.incomeData);
+  const income = useSelector(state => state.budget.income);
+  const budget = useSelector(state => state.budget.budget);
+  const budgetDetails = useSelector(state => state.budget.budgetDetails);
 
   const [date, setDate] = useState(dayjs());
 
@@ -18,9 +20,21 @@ const Calendar = () => {
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>Calendar</Typography>
-          <Typography variant="h6">Total Income: {incomeData?.income}</Typography>
-          <Typography variant="h6">Monthly Budget: {incomeData?.budget}</Typography>
-          <Typography variant="h6">Left Income: {incomeData?.income - expenses.reduce((total, expense) => total + expense.amount, 0)}</Typography>
+          <Typography variant="h6">Total Income: {income}</Typography>
+          <Typography variant="h6">Monthly Budget: {budget}</Typography>
+          <Typography variant="h6">Left Income: {income - budget}</Typography>
+        </CardContent>
+      </Card>
+      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
+        <CardContent>
+          <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
+          {budgetDetails.length ? (
+            budgetDetails.map((budget, index) => (
+              <Typography key={index} variant="subtitle1">{`${budget.type}: ${budget.amount}`}</Typography>
+            ))
+          ) : (
+            <Typography variant="body2">No budget data available.</Typography>
+          )}
         </CardContent>
       </Card>
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>

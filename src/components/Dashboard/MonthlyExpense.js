@@ -16,8 +16,9 @@ const expenseCategories = ['Food', 'Transport', 'Shopping', 'Education'];
 
 const MonthlyExpense = () => {
   const dispatch = useDispatch();
-  const incomeData = useSelector(state => state.budget.incomeData);
-  const budgetData = useSelector(state => state.budget.budgetData);
+  const income = useSelector(state => state.budget.income);
+  const budget = useSelector(state => state.budget.budget);
+  const budgetDetails = useSelector(state => state.budget.budgetDetails);
   const expenses = useSelector(state => state.monthlyExpense.expenses);
   const userEmail = useSelector(state => state.auth.user?.email);
 
@@ -50,16 +51,16 @@ const MonthlyExpense = () => {
     return expenses.reduce((total, expense) => total + expense.amount, 0);
   };
 
-  const leftIncome = incomeData?.income - calculateTotalExpenses();
+  const leftIncome = income - calculateTotalExpenses();
 
   return (
     <Box p={2} display="flex" flexDirection="column" alignItems="center">
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>Daily Expense</Typography>
-          <Typography variant="subtitle1">Total Income: {incomeData?.income}</Typography>
-          <Typography variant="subtitle1">Budget: {incomeData?.budget}</Typography>
-          <Typography variant="subtitle1">Left Income: {leftIncome}</Typography>
+          <Typography variant="subtitle1">Total Income: {income}</Typography>
+          <Typography variant="subtitle1">Budget: {budget}</Typography>
+          <Typography variant="subtitle1">Left Income: {income - budget}</Typography>
         </CardContent>
       </Card>
 
@@ -117,6 +118,19 @@ const MonthlyExpense = () => {
               <Button variant="contained" onClick={handleAddExpense} fullWidth>Add Expense</Button>
             </Grid>
           </Grid>
+        </CardContent>
+      </Card>
+
+      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
+        <CardContent>
+          <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
+          {budgetDetails.length ? (
+            budgetDetails.map((budget, index) => (
+              <Typography key={index} variant="subtitle1">{`${budget.type}: ${budget.amount}`}</Typography>
+            ))
+          ) : (
+            <Typography variant="body2">No budget data available.</Typography>
+          )}
         </CardContent>
       </Card>
 
