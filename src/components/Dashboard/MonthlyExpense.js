@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Typography, Card, CardContent, Grid, TextField, MenuItem, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, Grid, TextField, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { addExpense, deleteExpense } from '../store/monthlyExpenseSlice';
@@ -8,17 +8,17 @@ import BudgetGraph from '../MonthlyBudget/BudgetGraph';
 import Calculator from './Calculator';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import Autocomplete from '@mui/material/Autocomplete';
 import { sendExpenseEmail } from '../utils/emailUtils';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 
-const expenseCategories = ['Food', 'Transport', 'Shopping', 'Education'];
-
+const expenseCategories = ['Food', 'Travel', 'Utilities', 'Entertainment', 'Shopping', 'Education', 'Electricity'];
+  
 const MonthlyExpense = () => {
   const dispatch = useDispatch();
   const income = useSelector(state => state.budget.income);
   const budget = useSelector(state => state.budget.budget);
-  const budgetDetails = useSelector(state => state.budget.budgetDetails);
   const expenses = useSelector(state => state.monthlyExpense.expenses);
   const userEmail = useSelector(state => state.auth.user?.email);
 
@@ -28,6 +28,9 @@ const MonthlyExpense = () => {
   const [customCategory, setCustomCategory] = useState('');
   const [showGraph, setShowGraph] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+
+  const [budgetDetails, setBudgetDetails] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const handleAddExpense = () => {
     const expense = {
@@ -47,11 +50,16 @@ const MonthlyExpense = () => {
     dispatch(deleteExpense(id));
   };
 
-  const calculateTotalExpenses = () => {
-    return expenses.reduce((total, expense) => total + expense.amount, 0);
+  const handleCategoryChange = (event, newValue) => {
+    setSelectedCategory(newValue);
+    setCategory(newValue);
   };
 
-  const leftIncome = income - calculateTotalExpenses();
+  // const handleAddBudgetDetail = () => {
+  //   const newBudget = { type: selectedCategory, amount: 100 }; // Assuming you have some logic to determine the amount
+  //   setBudgetDetails([...budgetDetails, newBudget]);
+  //   setSelectedCategory('');
+  // };
 
   return (
     <Box p={2} display="flex" flexDirection="column" alignItems="center">
@@ -79,31 +87,15 @@ const MonthlyExpense = () => {
               </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                label="Category"
+              <Autocomplete
+                freeSolo
+                disablePortal
+                id="combo-box-demo"
+                options={expenseCategories}
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                fullWidth
-                select
-              >
-                {expenseCategories.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-                <MenuItem value="">
-                  <em>Custom</em>
-                </MenuItem>
-              </TextField>
-              {!category && (
-                <TextField
-                  label="Custom Category"
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                />
-              )}
+                onChange={handleCategoryChange}
+                renderInput={(params) => <TextField {...params} label="Category" />}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -121,7 +113,7 @@ const MonthlyExpense = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
+      {/* <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
           <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
           {budgetDetails.length ? (
@@ -132,7 +124,7 @@ const MonthlyExpense = () => {
             <Typography variant="body2">No budget data available.</Typography>
           )}
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
         <CardContent>
