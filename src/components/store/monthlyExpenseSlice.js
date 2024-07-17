@@ -1,21 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Load initial state from localStorage
-const initialState = JSON.parse(localStorage.getItem('monthlyExpense')) || {
-  expenses: [],
-};
-
 const monthlyExpenseSlice = createSlice({
   name: 'monthlyExpense',
-  initialState,
+  initialState: {
+    monthlyExpenses: JSON.parse(localStorage.getItem('monthlyExpenses')) || {},
+  },
   reducers: {
     addExpense: (state, action) => {
-      state.expenses.push(action.payload);
-      localStorage.setItem('monthlyExpense', JSON.stringify(state));
+      const { month, expense } = action.payload;
+      if (!state.monthlyExpenses[month]) {
+        state.monthlyExpenses[month] = [];
+      }
+      state.monthlyExpenses[month].push(expense);
+      localStorage.setItem('monthlyExpenses', JSON.stringify(state.monthlyExpenses));
     },
     deleteExpense: (state, action) => {
-      state.expenses = state.expenses.filter(expense => expense.id !== action.payload);
-      localStorage.setItem('monthlyExpense', JSON.stringify(state));
+      const { month, id } = action.payload;
+      state.monthlyExpenses[month] = state.monthlyExpenses[month].filter(expense => expense.id !== id);
+      localStorage.setItem('monthlyExpenses', JSON.stringify(state.monthlyExpenses));
     },
   },
 });

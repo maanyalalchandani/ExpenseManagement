@@ -3,31 +3,20 @@ import { createSlice } from '@reduxjs/toolkit';
 const budgetSlice = createSlice({
   name: 'budget',
   initialState: {
-    income: 0,
-    budget: 0,
-    expenses: [],
-    budgetDetails: [],
+    monthlyData: JSON.parse(localStorage.getItem('budgetData')) || {},
   },
   reducers: {
-    setIncome: (state, action) => {
-      state.income = action.payload;
-      localStorage.setItem('income', action.payload);
-    },
-    setBudget: (state, action) => {
-      state.budget = action.payload;
-      localStorage.setItem('budget', action.payload);
-    },
-    addExpense: (state, action) => {
-      state.expenses.push(action.payload);
-      localStorage.setItem('expenses', JSON.stringify(state.expenses));
-    },
-    setBudgetDetails: (state, action) => {
-      state.budgetDetails = action.payload;
-      localStorage.setItem('budgetDetails', JSON.stringify(action.payload));
+    setMonthlyData: (state, action) => {
+      const { month, data } = action.payload;
+      state.monthlyData[month] = {
+        ...state.monthlyData[month],
+        ...data,
+      };
+      localStorage.setItem('budgetData', JSON.stringify(state.monthlyData));
     },
   },
 });
 
-export const { setIncome, setBudget, addExpense, setBudgetDetails } = budgetSlice.actions;
+export const { setMonthlyData } = budgetSlice.actions;
 
 export default budgetSlice.reducer;

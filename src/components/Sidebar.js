@@ -14,7 +14,7 @@ import ListItemText from '@mui/material/ListItemText';
 import BudgetIcon from '@mui/icons-material/MonetizationOn';
 import ExpenseIcon from '@mui/icons-material/ReceiptLong';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import CalculatorIcon from '@mui/icons-material/Calculate';
+//import CalculatorIcon from '@mui/icons-material/Calculate';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
@@ -45,7 +45,7 @@ const Sidebar = ({ open, handleDrawerClose, setActiveItem }) => {
     { text: 'Monthly Budget', icon: <BudgetIcon /> },
     { text: 'Daily Expenses', icon: <ExpenseIcon /> },
     { text: 'Calendar', icon: <CalendarTodayIcon /> },
-    { text: 'Calculator', icon: <CalculatorIcon /> },
+    //{ text: 'Calculator', icon: <CalculatorIcon /> },
     { text: 'Edit Profile', icon: <EditIcon /> },
     { text: 'Logout', icon: <LogoutIcon />, action: handleLogout },
   ];

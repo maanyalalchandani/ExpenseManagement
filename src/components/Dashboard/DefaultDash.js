@@ -1,49 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
-import { setIncome, setBudget, addExpense, setBudgetDetails } from '../store/budgetSlice';
-import { addExpense as addMonthlyExpense } from '../store/monthlyExpenseSlice';
+import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 
 const DefaultDash = () => {
-  const dispatch = useDispatch();
-  const income = useSelector(state => state.budget.income);
-  const budget = useSelector(state => state.budget.budget);
-  const budgetDetails = useSelector(state => state.budget.budgetDetails);
-  const expenses = useSelector(state => state.monthlyExpense.expenses);
+  const monthlyData = useSelector(state => state.budget.monthlyData);
+  const monthlyExpenses = useSelector(state => state.monthlyExpense.monthlyExpenses);
 
-  useEffect(() => {
-    const storedIncome = localStorage.getItem('income');
-    const storedBudget = localStorage.getItem('budget');
-    const storedBudgetDetails = JSON.parse(localStorage.getItem('budgetDetails')) || [];
-    const storedExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const storedMonthlyExpenses = JSON.parse(localStorage.getItem('monthlyExpenses')) || [];
+  const currentMonth = dayjs().format('YYYY-MM');
+  const currentMonthData = monthlyData[currentMonth] || {};
+  const { income, budget, budgetDetails } = currentMonthData;
+  const expenses = monthlyExpenses[currentMonth] || [];
 
-    if (storedIncome) {
-      dispatch(setIncome(parseFloat(storedIncome)));
-    }
-
-    if (storedBudget) {
-      dispatch(setBudget(parseFloat(storedBudget)));
-    }
-
-    if (storedBudgetDetails.length > 0) {
-      dispatch(setBudgetDetails(storedBudgetDetails));
-    }
-
-    if (storedExpenses.length > 0) {
-      storedExpenses.forEach(expense => dispatch(addExpense(expense)));
-    }
-
-    if (storedMonthlyExpenses.length > 0) {
-      storedMonthlyExpenses.forEach(expense => dispatch(addMonthlyExpense(expense)));
-    }
-  }, [dispatch]);
-
-  // const calculateTotalExpenses = () => {
-  //   return expenses.reduce((total, expense) => total + expense.amount, 0);
-  // };
-
-  const leftIncome = income - budget;
+  const leftIncome = income && budget ? income - budget : 'Not available';
 
   return (
     <Box p={2} display="flex" flexDirection="column" alignItems="center">
@@ -53,8 +22,8 @@ const DefaultDash = () => {
             <CardContent>
               <Typography variant="h6" gutterBottom>Monthly Budget</Typography>
               <Box>
-                <Typography variant="subtitle1">Income: {income}</Typography>
-                <Typography variant="subtitle1">Budget: {budget}</Typography>
+                <Typography variant="subtitle1">Income: {income || 'Not set'}</Typography>
+                <Typography variant="subtitle1">Budget: {budget || 'Not set'}</Typography>
                 <Typography variant="subtitle1">Left Income: {leftIncome}</Typography>
               </Box>
             </CardContent>
@@ -64,7 +33,7 @@ const DefaultDash = () => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Monthly Expenses</Typography>
-              {budgetDetails.length ? (
+              {budgetDetails && budgetDetails.length ? (
                 budgetDetails.map((budget, index) => (
                   <Typography key={index} variant="subtitle1">{`${budget.type}: ${budget.amount}`}</Typography>
                 ))

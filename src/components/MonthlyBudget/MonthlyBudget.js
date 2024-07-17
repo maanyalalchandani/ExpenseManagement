@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Typography, Card, CardContent } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, Select, MenuItem } from '@mui/material';
 import AddIncomeForm from './AddIncomeForm';
 import AddBudgetForm from './AddBudgetForm';
 import BudgetGraph from './BudgetGraph';
-import { setIncome, setBudget, setBudgetDetails } from '../store/budgetSlice';
+import { setMonthlyData } from '../store/budgetSlice';
+import dayjs from 'dayjs';
 
 const MonthlyBudget = () => {
   const dispatch = useDispatch();
-  const income = useSelector(state => state.budget.income);
-  const budget = useSelector(state => state.budget.budget);
-  const budgetDetails = useSelector(state => state.budget.budgetDetails);
+  const monthlyData = useSelector(state => state.budget.monthlyData);
   
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format('YYYY-MM'));
   const [showGraph, setShowGraph] = useState(false);
-  const [editingIncome, setEditingIncome] = useState(!income);
-  const [editingBudget, setEditingBudget] = useState(!budgetDetails.length);
+  const [editingIncome, setEditingIncome] = useState(false);
+  const [editingBudget, setEditingBudget] = useState(false);
+
+  const currentMonthData = monthlyData[currentMonth] || {};
+  const { income, budget, budgetDetails } = currentMonthData;
+
+  useEffect(() => {
+    if (!income) setEditingIncome(true);
+    if (!budgetDetails || budgetDetails.length === 0) setEditingBudget(true);
+  }, [currentMonth, income, budgetDetails]);
 
   const handleIncomeSubmit = (data) => {
-    dispatch(setIncome(data.income));
-    dispatch(setBudget(data.budget));
+    dispatch(setMonthlyData({
+      month: currentMonth,
+      data: { income: data.income, budget: data.budget },
+    }));
     setEditingIncome(false);
   };
 
   const handleBudgetSubmit = (data) => {
-    dispatch(setBudgetDetails(data));
+    dispatch(setMonthlyData({
+      month: currentMonth,
+      data: { budgetDetails: data },
+    }));
     setEditingBudget(false);
   };
 
@@ -36,7 +49,6 @@ const MonthlyBudget = () => {
   };
 
   const calculateLeftIncome = () => {
-    // const totalBudget = budgetDetails.reduce((sum, budget) => sum + budget.amount, 0);
     return income - budget;
   };
 
@@ -45,6 +57,21 @@ const MonthlyBudget = () => {
       <Card sx={{ maxWidth: 600, width: '100%' }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>Monthly Budget</Typography>
+          <Select
+            value={currentMonth}
+            onChange={(e) => setCurrentMonth(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          >
+            {[...Array(12)].map((_, i) => {
+              const month = dayjs().subtract(i, 'month').format('YYYY-MM');
+              return (
+                <MenuItem key={month} value={month}>
+                  {dayjs(month).format('MMMM YYYY')}
+                </MenuItem>
+              );
+            })}
+          </Select>
           {editingIncome ? (
             <AddIncomeForm
               onSubmit={handleIncomeSubmit}
@@ -64,7 +91,7 @@ const MonthlyBudget = () => {
               ) : (
                 <Box mt={3}>
                   <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
-                  {budgetDetails.map((budget, index) => (
+                  {budgetDetails && budgetDetails.map((budget, index) => (
                     <Typography key={index} sx={{ mb: 1 }}>{`${budget.type}: ${budget.amount}`}</Typography>
                   ))}
                   <Box display="flex" justifyContent="space-between">
