@@ -7,16 +7,19 @@ const monthlyExpenseSlice = createSlice({
   },
   reducers: {
     addExpense: (state, action) => {
-      const { month, expense } = action.payload;
-      if (!state.monthlyExpenses[month]) {
-        state.monthlyExpenses[month] = [];
+      const { userId, month, expense } = action.payload;
+      if (!state.monthlyExpenses[userId]) {
+        state.monthlyExpenses[userId] = {};
       }
-      state.monthlyExpenses[month].push(expense);
+      if (!state.monthlyExpenses[userId][month]) {
+        state.monthlyExpenses[userId][month] = [];
+      }
+      state.monthlyExpenses[userId][month].push(expense);
       localStorage.setItem('monthlyExpenses', JSON.stringify(state.monthlyExpenses));
     },
     deleteExpense: (state, action) => {
-      const { month, id } = action.payload;
-      state.monthlyExpenses[month] = state.monthlyExpenses[month].filter(expense => expense.id !== id);
+      const { userId, month, id } = action.payload;
+      state.monthlyExpenses[userId][month] = state.monthlyExpenses[userId][month].filter(expense => expense.id !== id);
       localStorage.setItem('monthlyExpenses', JSON.stringify(state.monthlyExpenses));
     },
   },

@@ -19,6 +19,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
 import { useTheme } from '@mui/material/styles';
+import { useDispatch } from 'react-redux';
+import { logout } from './store/authSlice';
 
 const drawerWidth = 240;
 
@@ -33,11 +35,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const Sidebar = ({ open, handleDrawerClose, setActiveItem }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Perform any necessary logout logic here
-    navigate('/login');
+    dispatch(logout());
+    navigate('/login'); 
   };
 
   const sidebarItems = [

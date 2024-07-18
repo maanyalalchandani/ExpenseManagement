@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   Box, Button, Typography, Card, CardContent, Grid, TextField, 
-  IconButton, Dialog, DialogTitle, DialogContent, Select, MenuItem 
+  IconButton, Dialog, DialogTitle, DialogContent, Select, MenuItem, useTheme,
+  Chip, Divider, List, ListItem, ListItemText, ListItemSecondaryAction
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { addExpense, deleteExpense } from '../store/monthlyExpenseSlice';
-import { setMonthlyData } from '../store/budgetSlice';
 import BudgetGraph from '../MonthlyBudget/BudgetGraph';
 import Calculator from './Calculator';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import Autocomplete from '@mui/material/Autocomplete';
 import { sendExpenseEmail } from '../utils/emailUtils';
 import dayjs from 'dayjs';
@@ -21,15 +24,15 @@ const expenseCategories = ['Food', 'Travel', 'Utilities', 'Entertainment', 'Shop
 
 const MonthlyExpense = () => {
   const dispatch = useDispatch();
-  const monthlyData = useSelector(state => state.budget.monthlyData);
-  const monthlyExpenses = useSelector(state => state.monthlyExpense.monthlyExpenses);
-  const userEmail = useSelector(state => state.auth.user?.email);
+  const theme = useTheme();
+  const currentUser = useSelector(state => state.auth.user);
+  const monthlyData = useSelector(state => state.budget.monthlyData[currentUser.id] || {});
+  const monthlyExpenses = useSelector(state => state.monthlyExpense.monthlyExpenses[currentUser.id] || {});
 
   const [selectedMonth, setSelectedMonth] = useState(dayjs().format('YYYY-MM'));
   const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState('');
   const [amount, setAmount] = useState('');
-  const [customCategory, setCustomCategory] = useState('');
   const [showGraph, setShowGraph] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
 
@@ -41,22 +44,17 @@ const MonthlyExpense = () => {
     const expense = {
       id: uuidv4(),
       date: date.format('YYYY-MM-DD'),
-      category: category || customCategory,
+      category: category,
       amount: parseFloat(amount),
     };
-    dispatch(addExpense({ month: selectedMonth, expense }));
-    sendExpenseEmail(expense, userEmail);
+    dispatch(addExpense({ userId: currentUser.id, month: selectedMonth, expense }));
+    sendExpenseEmail(expense, currentUser.email);
     setCategory('');
-    setCustomCategory('');
     setAmount('');
   };
 
   const handleDeleteExpense = (id) => {
-    dispatch(deleteExpense({ month: selectedMonth, id }));
-  };
-
-  const handleCategoryChange = (event, newValue) => {
-    setCategory(newValue);
+    dispatch(deleteExpense({ userId: currentUser.id, month: selectedMonth, id }));
   };
 
   const calculateTotalExpenses = () => {
@@ -68,96 +66,125 @@ const MonthlyExpense = () => {
   };
 
   return (
-    <Box p={2} display="flex" flexDirection="column" alignItems="center">
-      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>Monthly Expense</Typography>
-          <Select
-            value={selectedMonth}
-            onChange={handleMonthChange}
-            fullWidth
-            sx={{ mb: 2 }}
-          >
-            {[...Array(12)].map((_, i) => {
-              const month = dayjs().subtract(i, 'month').format('YYYY-MM');
-              return (
-                <MenuItem key={month} value={month}>
-                  {dayjs(month).format('MMMM YYYY')}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          <Typography variant="subtitle1">Total Income: {income || 'Not set'}</Typography>
-          <Typography variant="subtitle1">Budget: {budget || 'Not set'}</Typography>
-          <Typography variant="subtitle1">Left Income: {income && budget ? income - budget : 'Not available'}</Typography>
-          <Typography variant="subtitle1">Total Expenses: {calculateTotalExpenses()}</Typography>
-          <Box display="flex" justifyContent="space-between" width="100%">
-            <Button variant="contained" onClick={() => setShowGraph(true)} sx={{ mt: 2 }}>
-              Show Graph
-            </Button>
-            <Button variant="contained" onClick={() => setShowCalculator(true)} sx={{ mt: 2 }}>
-              Calculator
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
-        <CardContent>
-          <Typography variant="subtitle1" gutterBottom>Add Expense</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Date"
-                  value={date}
-                  onChange={(newValue) => setDate(newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                freeSolo
-                disablePortal
-                id="combo-box-demo"
-                options={expenseCategories}
-                value={category}
-                onChange={handleCategoryChange}
-                renderInput={(params) => <TextField {...params} label="Category" />}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+    <Box p={4} sx={{ backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={12} md={8}>
+          <Card elevation={3} sx={{ mb: 3, bgcolor: 'background.paper' }}>
+            <CardContent>
+              <Typography variant="h4" gutterBottom color="primary">Monthly Expense</Typography>
+              <Select
+                value={selectedMonth}
+                onChange={handleMonthChange}
                 fullWidth
-                type="number"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button variant="contained" onClick={handleAddExpense} fullWidth>Add Expense</Button>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+                sx={{ mb: 2 }}
+              >
+                {[...Array(12)].map((_, i) => {
+                  const month = dayjs().subtract(i, 'month').format('YYYY-MM');
+                  return (
+                    <MenuItem key={month} value={month}>
+                      {dayjs(month).format('MMMM YYYY')}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle1">Total Income: ₹{income || 'Not set'}</Typography>
+                  <Typography variant="subtitle1">Budget: ₹{budget || 'Not set'}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle1">Left Income: ₹{income && budget ? income - budget : 'Not available'}</Typography>
+                  <Typography variant="subtitle1">Total Expenses: ₹{calculateTotalExpenses()}</Typography>
+                </Grid>
+              </Grid>
+              <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
+                <Button variant="contained" color="primary" onClick={() => setShowGraph(true)} startIcon={<BarChartIcon />}>
+                  Show Graph
+                </Button>
+                <Button variant="contained" color="secondary" onClick={() => setShowCalculator(true)} startIcon={<CalculateIcon />}>
+                  Calculator
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
 
-      <Card sx={{ maxWidth: 800, width: '100%', mb: 3 }}>
-        <CardContent>
-          <Typography variant="subtitle1" gutterBottom>Expenses</Typography>
-          {expenses.map((expense) => (
-            <Box key={expense.id} display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-              <Typography>{`${expense.date} - ${expense.category}: ${expense.amount}`}</Typography>
-              <IconButton onClick={() => handleDeleteExpense(expense.id)}>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          ))}
-        </CardContent>
-      </Card>
+          <Card elevation={3} sx={{ mb: 3, bgcolor: 'background.paper' }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom color="primary">Add Expense</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Date"
+                      value={date}
+                      onChange={(newValue) => setDate(newValue)}
+                      renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    freeSolo
+                    disablePortal
+                    id="combo-box-demo"
+                    options={expenseCategories}
+                    value={category}
+                    onChange={(_, newValue) => setCategory(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Category" fullWidth />}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    fullWidth
+                    type="number"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={handleAddExpense} 
+                    fullWidth
+                    startIcon={<AddIcon />}
+                  >
+                    Add Expense
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+
+          <Card elevation={3} sx={{ bgcolor: 'background.paper' }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom color="primary">Expenses</Typography>
+              <List>
+                {expenses.map((expense) => (
+                  <React.Fragment key={expense.id}>
+                    <ListItem>
+                      <ListItemText
+                        primary={`${expense.category}: ₹${expense.amount}`}
+                        secondary={dayjs(expense.date).format('MMMM D, YYYY')}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteExpense(expense.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       <BudgetGraph open={showGraph} onClose={() => setShowGraph(false)} data={expenses} />
+      
       <Dialog open={showCalculator} onClose={() => setShowCalculator(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
           Calculator

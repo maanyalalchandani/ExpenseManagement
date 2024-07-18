@@ -7,9 +7,15 @@ const budgetSlice = createSlice({
   },
   reducers: {
     setMonthlyData: (state, action) => {
-      const { month, data } = action.payload;
-      state.monthlyData[month] = {
-        ...state.monthlyData[month],
+      const { userId, month, data } = action.payload;
+      if (!state.monthlyData[userId]) {
+        state.monthlyData[userId] = {};
+      }
+      if (!state.monthlyData[userId][month]) {
+        state.monthlyData[userId][month] = {};
+      }
+      state.monthlyData[userId][month] = {
+        ...state.monthlyData[userId][month],
         ...data,
       };
       localStorage.setItem('budgetData', JSON.stringify(state.monthlyData));
