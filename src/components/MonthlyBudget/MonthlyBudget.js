@@ -32,13 +32,13 @@ const MonthlyBudget = () => {
   const [editingIncome, setEditingIncome] = useState(false);
   const [editingBudget, setEditingBudget] = useState(false);
 
-  const currentMonthData = monthlyData[currentMonth] || {};
-  const { income, budget, budgetDetails } = currentMonthData;
+  const currentMonthData = monthlyData[currentMonth] || { income: 0, budget: 0, budgetDetails: [] };
+  const { income, budget, budgetDetails } = currentMonthData;  
 
   useEffect(() => {
-    if (!income) setEditingIncome(true);
-    if (!budgetDetails || budgetDetails.length === 0) setEditingBudget(true);
-  }, [currentMonth, income, budgetDetails]);
+    if (!income && !editingIncome) setEditingIncome(true);
+    if ((!budgetDetails || budgetDetails.length === 0) && !editingBudget) setEditingBudget(true);
+  }, [currentMonth, income, budgetDetails, editingIncome, editingBudget]);
 
   const handleIncomeSubmit = (data) => {
     dispatch(setMonthlyData({
@@ -53,7 +53,9 @@ const MonthlyBudget = () => {
     dispatch(setMonthlyData({
       userId: currentUser.id,
       month: currentMonth,
-      data: { budgetDetails: data },
+      data: { 
+        budgetDetails: data,
+      },
     }));
     setEditingBudget(false);
   };
@@ -149,12 +151,16 @@ const MonthlyBudget = () => {
               <Box>
                 <Typography variant="h5" gutterBottom color="primary">Budget Details</Typography>
                 <Divider sx={{ mb: 2 }} />
-                {budgetDetails && budgetDetails.map((budgetItem, index) => (
-                  <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant="body1">{budgetItem.type}</Typography>
-                    <Typography variant="body1" fontWeight="bold">₹{budgetItem.amount}</Typography>
-                  </Box>
-                ))}
+                {budgetDetails.length > 0 ? (
+                  budgetDetails.map((budgetItem, index) => (
+                    <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body1">{budgetItem.type}</Typography>
+                      <Typography variant="body1" fontWeight="bold">₹{budgetItem.amount}</Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography variant="body1">No budget details available for this month.</Typography>
+                )}
                 <Box display="flex" justifyContent="space-between" mt={3}>
                   <Button
                     variant="outlined"
@@ -167,6 +173,7 @@ const MonthlyBudget = () => {
                     variant="contained"
                     startIcon={<ShowChartIcon />}
                     onClick={handleShowGraph}
+                    disabled={budgetDetails.length === 0}
                   >
                     Show Graph
                   </Button>

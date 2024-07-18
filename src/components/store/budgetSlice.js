@@ -12,11 +12,17 @@ const budgetSlice = createSlice({
         state.monthlyData[userId] = {};
       }
       if (!state.monthlyData[userId][month]) {
-        state.monthlyData[userId][month] = {};
+        state.monthlyData[userId][month] = {
+          income: 0,
+          budget: 0,
+          budgetDetails: [],
+        };
       }
+    
       state.monthlyData[userId][month] = {
         ...state.monthlyData[userId][month],
         ...data,
+        budgetDetails: data.budgetDetails || state.monthlyData[userId][month].budgetDetails || [],
       };
       localStorage.setItem('budgetData', JSON.stringify(state.monthlyData));
     },
