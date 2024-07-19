@@ -1,76 +1,189 @@
-import React, { useState } from 'react';
-import { Box, Button, Typography, Card, CardContent } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Box,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  Select,
+  MenuItem,
+  Grid,
+  Divider,
+  Paper,
+  useTheme
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import AddIncomeForm from './AddIncomeForm';
 import AddBudgetForm from './AddBudgetForm';
 import BudgetGraph from './BudgetGraph';
+import { setMonthlyData } from '../store/budgetSlice';
+import dayjs from 'dayjs';
 
 const MonthlyBudget = () => {
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.auth.user);
+  const monthlyData = useSelector(state => state.budget.monthlyData[currentUser.id] || {});
+
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format('YYYY-MM'));
   const [showGraph, setShowGraph] = useState(false);
-  const [incomeData, setIncomeData] = useState(null);
-  const [budgetData, setBudgetData] = useState([]);
   const [editingIncome, setEditingIncome] = useState(false);
   const [editingBudget, setEditingBudget] = useState(false);
 
+  const currentMonthData = monthlyData[currentMonth] || { income: 0, budget: 0, budgetDetails: [] };
+  const { income, budget, budgetDetails } = currentMonthData;  
+
+  useEffect(() => {
+    if (!income && !editingIncome) setEditingIncome(true);
+    if ((!budgetDetails || budgetDetails.length === 0) && !editingBudget) setEditingBudget(true);
+  }, [currentMonth, income, budgetDetails, editingIncome, editingBudget]);
+
   const handleIncomeSubmit = (data) => {
-    setIncomeData(data);
+    dispatch(setMonthlyData({
+      userId: currentUser.id,
+      month: currentMonth,
+      data: { income: data.income, budget: data.budget },
+    }));
     setEditingIncome(false);
   };
 
   const handleBudgetSubmit = (data) => {
-    setBudgetData(data);
+    dispatch(setMonthlyData({
+      userId: currentUser.id,
+      month: currentMonth,
+      data: { 
+        budgetDetails: data,
+      },
+    }));
     setEditingBudget(false);
   };
 
-  const handleShowGraph = () => {
-    setShowGraph(true);
-  };
-
-  const handleCloseGraph = () => {
-    setShowGraph(false);
-  };
+  const handleShowGraph = () => setShowGraph(true);
+  const handleCloseGraph = () => setShowGraph(false);
+  const calculateLeftIncome = () => income - budget;
+  const formattedBudgetDetails = budgetDetails.map(item => ({
+    category: item.type,
+    amount: item.amount
+  }));
 
   return (
-    <Box p={2} display="flex" justifyContent="center">
-      <Card sx={{ maxWidth: 600, width: '100%' }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>Monthly Budget</Typography>
-          {!incomeData || editingIncome ? (
-            <AddIncomeForm
-              onSubmit={handleIncomeSubmit}
-              initialIncome={incomeData?.income || ''}
-              initialBudget={incomeData?.budget || ''}
-            />
-          ) : (
-            <Box>
-              <Typography variant="subtitle1">Income: {incomeData.income}</Typography>
-              <Typography variant="subtitle1">Budget: {incomeData.budget}</Typography>
-              <Typography variant="subtitle1">Left Income: {incomeData.leftIncome}</Typography>
-              <Button variant="contained" onClick={() => setEditingIncome(true)} sx={{ mt: 2 }}>
-                Edit Income
-              </Button>
-              {!budgetData.length || editingBudget ? (
-                <AddBudgetForm onSubmit={handleBudgetSubmit} totalBudget={incomeData.budget} />
-              ) : (
-                <Box mt={3}>
-                  <Typography variant="subtitle1" gutterBottom>Budget Details</Typography>
-                  {budgetData.map((budget, index) => (
-                    <Typography key={index} sx={{ mb: 1 }}>{`${budget.type}: ${budget.amount}`}</Typography>
-                  ))}
-                  <Box display="flex" justifyContent="space-between">
-                    <Button variant="contained" onClick={() => setEditingBudget(true)} sx={{ mt: 2 }}>
-                      Edit Budget
-                    </Button>
-                    <Button variant="contained" onClick={handleShowGraph} sx={{ mt: 2 }}>
-                      Show Graph
-                    </Button>
-                  </Box>
+    <Box 
+      p={4} 
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        minHeight: '100vh',
+      }}
+    >
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          maxWidth: 800, 
+          margin: 'auto', 
+          p: 3, 
+          borderRadius: 2 
+        }}
+      >
+        <Typography variant="h4" gutterBottom align="center" color="primary">
+          Monthly Budget
+        </Typography>
+        <Select
+          value={currentMonth}
+          onChange={(e) => setCurrentMonth(e.target.value)}
+          fullWidth
+          sx={{ mb: 4 }}
+        >
+          {[...Array(12)].map((_, i) => {
+            const month = dayjs().subtract(i, 'month').format('YYYY-MM');
+            return (
+              <MenuItem key={month} value={month}>
+                {dayjs(month).format('MMMM YYYY')}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        {editingIncome ? (
+          <AddIncomeForm
+            onSubmit={handleIncomeSubmit}
+            initialIncome={income || ''}
+            initialBudget={budget || ''}
+          />
+        ) : (
+          <Box>
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+              <Grid item xs={12} sm={4}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Typography variant="h6" color="textSecondary">Income</Typography>
+                    <Typography variant="h4">₹{income || 'N/A'}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Typography variant="h6" color="textSecondary">Budget</Typography>
+                    <Typography variant="h4">₹{budget || 'N/A'}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Typography variant="h6" color="textSecondary">Left Income</Typography>
+                    <Typography variant="h4">₹{calculateLeftIncome() || 'N/A'}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              onClick={() => setEditingIncome(true)}
+              sx={{ mb: 3 }}
+            >
+              Edit Income
+            </Button>
+            {editingBudget ? (
+              <AddBudgetForm onSubmit={handleBudgetSubmit} totalBudget={budget} />
+            ) : (
+              <Box>
+                <Typography variant="h5" gutterBottom color="primary">Budget Details</Typography>
+                <Divider sx={{ mb: 2 }} />
+                {budgetDetails.length > 0 ? (
+                  budgetDetails.map((budgetItem, index) => (
+                    <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body1">{budgetItem.type}</Typography>
+                      <Typography variant="body1" fontWeight="bold">₹{budgetItem.amount}</Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography variant="body1">No budget details available for this month.</Typography>
+                )}
+                <Box display="flex" justifyContent="space-between" mt={3}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    onClick={() => setEditingBudget(true)}
+                  >
+                    Edit Budget
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<ShowChartIcon />}
+                    onClick={handleShowGraph}
+                    disabled={budgetDetails.length === 0}
+                  >
+                    Show Graph
+                  </Button>
                 </Box>
-              )}
-            </Box>
-          )}
-        </CardContent>
-      </Card>
-      <BudgetGraph open={showGraph} onClose={handleCloseGraph} data={budgetData} />
+              </Box>
+            )}
+          </Box>
+        )}
+      </Paper>
+      <BudgetGraph open={showGraph} onClose={handleCloseGraph} data={formattedBudgetDetails} />
     </Box>
   );
 };

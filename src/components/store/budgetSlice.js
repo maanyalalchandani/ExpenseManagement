@@ -3,30 +3,32 @@ import { createSlice } from '@reduxjs/toolkit';
 const budgetSlice = createSlice({
   name: 'budget',
   initialState: {
-    income: 0,
-    budget: 0,
-    expenses: [],
+    monthlyData: JSON.parse(localStorage.getItem('budgetData')) || {},
   },
   reducers: {
-    setIncome: (state, action) => {
-      state.income = action.payload;
-    },
-    setBudget: (state, action) => {
-      state.budget = action.payload;
-    },
-    addExpense: (state, action) => {
-      state.expenses.push(action.payload);
-    },
-    updateExpense: (state, action) => {
-      const { index, expense } = action.payload;
-      state.expenses[index] = expense;
-    },
-    removeExpense: (state, action) => {
-      state.expenses.splice(action.payload, 1);
+    setMonthlyData: (state, action) => {
+      const { userId, month, data } = action.payload;
+      if (!state.monthlyData[userId]) {
+        state.monthlyData[userId] = {};
+      }
+      if (!state.monthlyData[userId][month]) {
+        state.monthlyData[userId][month] = {
+          income: 0,
+          budget: 0,
+          budgetDetails: [],
+        };
+      }
+    
+      state.monthlyData[userId][month] = {
+        ...state.monthlyData[userId][month],
+        ...data,
+        budgetDetails: data.budgetDetails || state.monthlyData[userId][month].budgetDetails || [],
+      };
+      localStorage.setItem('budgetData', JSON.stringify(state.monthlyData));
     },
   },
 });
 
-export const { setIncome, setBudget, addExpense, updateExpense, removeExpense } = budgetSlice.actions;
+export const { setMonthlyData } = budgetSlice.actions;
 
 export default budgetSlice.reducer;

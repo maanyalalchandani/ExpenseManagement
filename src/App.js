@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import Dashboard from './components/Dashboard/Dashboard';
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -10,8 +11,9 @@ import RegisterForm from './components/Auth/RegisterForm';
 import "./styles/global.css"
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
   const theme = createTheme({
     palette: {
@@ -32,8 +34,8 @@ const App = () => {
         {!hideHeaderFooter && <Header isLoggedIn={isLoggedIn} />}
         <Routes>
           <Route path="/dashboard" element={<Dashboard isLoggedIn={isLoggedIn} />} />
-          <Route path="/" element={<LoginForm setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
         </Routes>
         {!hideHeaderFooter && <Footer darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}

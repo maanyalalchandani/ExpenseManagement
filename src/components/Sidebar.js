@@ -14,11 +14,13 @@ import ListItemText from '@mui/material/ListItemText';
 import BudgetIcon from '@mui/icons-material/MonetizationOn';
 import ExpenseIcon from '@mui/icons-material/ReceiptLong';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import CalculatorIcon from '@mui/icons-material/Calculate';
+//import CalculatorIcon from '@mui/icons-material/Calculate';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
 import { useTheme } from '@mui/material/styles';
+import { useDispatch } from 'react-redux';
+import { logout } from './store/authSlice';
 
 const drawerWidth = 240;
 
@@ -33,11 +35,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const Sidebar = ({ open, handleDrawerClose, setActiveItem }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Perform any necessary logout logic here
-    navigate('/login');
+    dispatch(logout());
+    navigate('/login'); 
   };
 
   const sidebarItems = [
@@ -45,7 +48,7 @@ const Sidebar = ({ open, handleDrawerClose, setActiveItem }) => {
     { text: 'Monthly Budget', icon: <BudgetIcon /> },
     { text: 'Daily Expenses', icon: <ExpenseIcon /> },
     { text: 'Calendar', icon: <CalendarTodayIcon /> },
-    { text: 'Calculator', icon: <CalculatorIcon /> },
+    //{ text: 'Calculator', icon: <CalculatorIcon /> },
     { text: 'Edit Profile', icon: <EditIcon /> },
     { text: 'Logout', icon: <LogoutIcon />, action: handleLogout },
   ];

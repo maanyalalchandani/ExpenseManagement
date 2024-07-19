@@ -10,6 +10,7 @@ import Calendar from './Calendar';
 import MonthlyExpense from './MonthlyExpense';
 import Calculator from './Calculator';
 import DefaultDash from './DefaultDash';
+import EditProfile from './EditProfile';
 
 const drawerWidth = 240;
 
@@ -57,7 +58,7 @@ const Dashboard = () => {
       case 'Calculator':
         return <Calculator />;
       case 'Edit Profile':
-        return <Typography paragraph>Edit Profile Content</Typography>;
+        return <EditProfile />;
       // case 'Logout':
       //   return <Typography paragraph>Logout Content</Typography>;
       default:
