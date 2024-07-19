@@ -44,6 +44,32 @@ Personal Finance Tracker is a comprehensive web application designed to help use
 5. Utilize the Calendar view to track expenses on specific dates.
 6. View graphical representations of your budget and expenses for better insights.
 
+## Screenshots
+
+1. Login Page
+![signin](https://github.com/user-attachments/assets/fcb672e2-3cbf-4e72-90c9-03dba63ccb71)
+
+2. Registration Page
+![registration](https://github.com/user-attachments/assets/0617980e-bb75-44e8-a958-3d6e7ba518ed)
+
+3. Dashboard
+![landing_page](https://github.com/user-attachments/assets/7ee23a53-3652-47db-bc7b-f50553ff4cd5)
+
+4. Monthly Budget Page
+![budget](https://github.com/user-attachments/assets/c4f96ca9-d126-42ea-87ed-0c26cfe36e16)
+
+5. Budget Graph
+![budget_graph](https://github.com/user-attachments/assets/e750297a-6fd9-4c12-b63d-9467ac13352f)
+
+6. Expense Page
+![monthly_exp](https://github.com/user-attachments/assets/d4007584-ea6b-4675-a378-efc05c81cdff)
+![monthly_exp2](https://github.com/user-attachments/assets/cdcde4fe-6115-4623-8041-e30bb5f452a1)
+
+7. Calendar in Dark Mode
+![calendar_darkmode](https://github.com/user-attachments/assets/8c24b5cf-3bd4-4a78-90b9-36a3ea117b17)
+![calendar2](https://github.com/user-attachments/assets/ff5d9d27-a30e-4f83-9411-6fed56f98ac4)
+
+   
 ## Contributing
 
 Contributions to improve Personal Finance Tracker are welcome.
